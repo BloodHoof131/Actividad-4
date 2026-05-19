@@ -9,7 +9,7 @@ public class LeerArchivo {
 
     public static void main(String[] args) {
 
-        String nombreArchivo = "C:/prueba.txt";
+        String nombreArchivo = "LeerArchivo.txt";
 
         FileInputStream archivo;
         InputStreamReader conversor;
