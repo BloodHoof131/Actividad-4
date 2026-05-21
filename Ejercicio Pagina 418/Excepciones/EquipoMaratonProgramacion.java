@@ -1,24 +1,87 @@
 package Excepciones;
 
-import java.util.Scanner;
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
-public class EquipoMaratonProgramacion {
+public class EquipoMaratonProgramacion
+        extends JFrame
+        implements ActionListener {
 
     // Atributos
     String nombreEquipo;
     String universidad;
     String lenguajeProgramacion;
+
     Programador[] programadores;
+
     int tamañoEquipo;
 
-    // Constructor
+    JTextArea areaTexto;
+    JTextField campoTexto;
+
+    int paso = 0;
+
+    String nombreProgramador;
+    String apellidosProgramador;
+
+    // Constructor interfaz
+    public EquipoMaratonProgramacion() {
+
+        setTitle("Equipo Maratón de Programación");
+
+        setSize(650, 500);
+
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+        setLocationRelativeTo(null);
+
+        setLayout(new BorderLayout());
+
+        // Área de texto
+        areaTexto = new JTextArea();
+
+        areaTexto.setEditable(false);
+
+        areaTexto.setFont(
+            new Font("Consolas", Font.PLAIN, 15)
+        );
+
+        JScrollPane scroll =
+            new JScrollPane(areaTexto);
+
+        // Campo de entrada
+        campoTexto = new JTextField();
+
+        campoTexto.setFont(
+            new Font("Consolas", Font.PLAIN, 15)
+        );
+
+        campoTexto.addActionListener(this);
+
+        add(scroll, BorderLayout.CENTER);
+
+        add(campoTexto, BorderLayout.SOUTH);
+
+        // Primera pregunta
+        areaTexto.append(
+            "Nombre del equipo:\n> "
+        );
+
+        setVisible(true);
+    }
+
+    // Constructor del equipo
     EquipoMaratonProgramacion(
             String nombreEquipo,
             String universidad,
             String lenguajeProgramacion) {
 
         this.nombreEquipo = nombreEquipo;
+
         this.universidad = universidad;
+
         this.lenguajeProgramacion = lenguajeProgramacion;
 
         tamañoEquipo = 0;
@@ -26,19 +89,20 @@ public class EquipoMaratonProgramacion {
         programadores = new Programador[3];
     }
 
-    // Verifica si el equipo está lleno
+    // Verificar si está lleno
     boolean estaLleno() {
 
         return tamañoEquipo == programadores.length;
     }
 
     // Añadir programador
-    void añadir(Programador programador) throws Exception {
+    void añadir(Programador programador)
+            throws Exception {
 
         if (estaLleno()) {
 
             throw new Exception(
-                "El equipo está completo. No se pudo agregar programador."
+                "El equipo está completo."
             );
         }
 
@@ -47,8 +111,9 @@ public class EquipoMaratonProgramacion {
         tamañoEquipo++;
     }
 
-    // Validar campos
-    static void validarCampo(String campo) throws Exception {
+    // Validar campo
+    static void validarCampo(String campo)
+            throws Exception {
 
         for (int j = 0; j < campo.length(); j++) {
 
@@ -57,7 +122,7 @@ public class EquipoMaratonProgramacion {
             if (Character.isDigit(c)) {
 
                 throw new Exception(
-                    "El nombre no puede tener dígitos."
+                    "El nombre no puede tener números."
                 );
             }
         }
@@ -65,47 +130,96 @@ public class EquipoMaratonProgramacion {
         if (campo.length() > 20) {
 
             throw new Exception(
-                "La longitud no debe ser superior a 20 caracteres."
+                "La longitud no puede superar 20 caracteres."
             );
         }
     }
 
-    // Método principal
-    public static void main(String[] args) {
+    // Acción ENTER
+    @Override
+    public void actionPerformed(ActionEvent e) {
 
-        Scanner teclado = new Scanner(System.in);
+        String entrada = campoTexto.getText();
+
+        areaTexto.append(entrada + "\n");
+
+        campoTexto.setText("");
 
         try {
 
-            System.out.println("Nombre del equipo = ");
-            String nombre = teclado.next();
+            // PASO 1 -> NOMBRE EQUIPO
+            if (paso == 0) {
 
-            System.out.println("Universidad = ");
-            String universidad = teclado.next();
+                nombreEquipo = entrada;
 
-            System.out.println("Lenguaje de programación = ");
-            String lenguaje = teclado.next();
-
-            EquipoMaratonProgramacion equipo =
-                new EquipoMaratonProgramacion(
-                    nombre,
-                    universidad,
-                    lenguaje
+                areaTexto.append(
+                    "\nUniversidad:\n> "
                 );
 
-            System.out.println("Datos de los integrantes del equipo");
+                paso++;
+            }
 
-            for (int i = 0; i < 3; i++) {
+            // PASO 2 -> UNIVERSIDAD
+            else if (paso == 1) {
 
-                System.out.println("Nombre del integrante = ");
-                String nombreProgramador = teclado.next();
+                universidad = entrada;
 
-                validarCampo(nombreProgramador);
+                areaTexto.append(
+                    "\nLenguaje de programación:\n> "
+                );
 
-                System.out.println("Apellidos del integrante = ");
-                String apellidosProgramador = teclado.next();
+                paso++;
+            }
 
-                validarCampo(apellidosProgramador);
+            // PASO 3 -> LENGUAJE
+            else if (paso == 2) {
+
+                lenguajeProgramacion = entrada;
+
+                programadores =
+                    new Programador[3];
+
+                tamañoEquipo = 0;
+
+                areaTexto.append(
+                    "\n=== DATOS DE LOS INTEGRANTES ===\n"
+                );
+
+                areaTexto.append(
+                    "\nNombre del integrante 1:\n> "
+                );
+
+                paso++;
+            }
+
+            // NOMBRE PROGRAMADOR
+            else if (
+                paso == 3 ||
+                paso == 5 ||
+                paso == 7
+            ) {
+
+                validarCampo(entrada);
+
+                nombreProgramador = entrada;
+
+                areaTexto.append(
+                    "\nApellidos del integrante:\n> "
+                );
+
+                paso++;
+            }
+
+            // APELLIDOS PROGRAMADOR
+            else if (
+                paso == 4 ||
+                paso == 6 ||
+                paso == 8
+            ) {
+
+                validarCampo(entrada);
+
+                apellidosProgramador = entrada;
 
                 Programador programador =
                     new Programador(
@@ -113,18 +227,41 @@ public class EquipoMaratonProgramacion {
                         apellidosProgramador
                     );
 
-                equipo.añadir(programador);
+                añadir(programador);
+
+                if (tamañoEquipo < 3) {
+
+                    areaTexto.append(
+                        "\nNombre del integrante "
+                        + (tamañoEquipo + 1)
+                        + ":\n> "
+                    );
+
+                } else {
+
+                    areaTexto.append(
+                        "\nEquipo registrado correctamente."
+                    );
+
+                    campoTexto.setEditable(false);
+                }
+
+                paso++;
             }
 
-            System.out.println("Equipo registrado correctamente.");
+        } catch (Exception ex) {
 
-        } catch (Exception e) {
-
-            System.out.println("Error: " + e.getMessage());
-
-        } finally {
-
-            teclado.close();
+            areaTexto.append(
+                "\nError: "
+                + ex.getMessage()
+                + "\n> "
+            );
         }
+    }
+
+    // Main
+    public static void main(String[] args) {
+
+        new EquipoMaratonProgramacion();
     }
 }
