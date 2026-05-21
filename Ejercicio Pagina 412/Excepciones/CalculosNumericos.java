@@ -1,92 +1,133 @@
 package Excepciones;
 
-import java.util.InputMismatchException;
-import java.util.Scanner;
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
-public class CalculosNumericos {
+public class CalculosNumericos extends JFrame implements ActionListener {
 
-    // Método para calcular logaritmo neperiano
-    static void calcularLogaritmoNeperiano(double valor) {
+    JTextArea areaTexto;
+    JTextField campoTexto;
+
+    public CalculosNumericos() {
+
+        setTitle("Cálculos Numéricos");
+        setSize(550, 400);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setLocationRelativeTo(null);
+
+        setLayout(new BorderLayout());
+
+        // Área de texto tipo consola
+        areaTexto = new JTextArea();
+        areaTexto.setEditable(false);
+        areaTexto.setFont(new Font("Consolas", Font.PLAIN, 15));
+
+        JScrollPane scroll = new JScrollPane(areaTexto);
+
+        // Campo de entrada
+        campoTexto = new JTextField();
+        campoTexto.setFont(new Font("Consolas", Font.PLAIN, 15));
+
+        // ENTER ejecuta
+        campoTexto.addActionListener(this);
+
+        add(scroll, BorderLayout.CENTER);
+        add(campoTexto, BorderLayout.SOUTH);
+
+        // Mensaje inicial
+        areaTexto.append("Ingrese un valor numérico:\n> ");
+
+        setVisible(true);
+    }
+
+    // Método logaritmo
+    void calcularLogaritmoNeperiano(double valor) {
 
         try {
 
             if (valor < 0) {
 
                 throw new ArithmeticException(
-                    "El valor debe ser un número positivo"
+                    "El valor debe ser positivo"
                 );
             }
 
             double resultado = Math.log(valor);
 
-            System.out.println("Resultado del logaritmo = " + resultado);
+            areaTexto.append(
+                "\nResultado del logaritmo = " + resultado + "\n"
+            );
 
         } catch (ArithmeticException e) {
 
-            System.out.println(
-                "El valor debe ser un número positivo para calcular el logaritmo"
-            );
-
-        } catch (InputMismatchException e) {
-
-            System.out.println(
-                "El valor debe ser numérico para calcular el logaritmo"
+            areaTexto.append(
+                "\nError: El valor debe ser positivo para calcular el logaritmo.\n"
             );
         }
     }
 
-    // Método para calcular raíz cuadrada
-    static void calcularRaizCuadrada(double valor) {
+    // Método raíz cuadrada
+    void calcularRaizCuadrada(double valor) {
 
         try {
 
             if (valor < 0) {
 
                 throw new ArithmeticException(
-                    "El valor debe ser un número positivo"
+                    "El valor debe ser positivo"
                 );
             }
 
             double resultado = Math.sqrt(valor);
 
-            System.out.println("Resultado de la raíz cuadrada = " + resultado);
+            areaTexto.append(
+                "Resultado de la raíz cuadrada = " + resultado + "\n"
+            );
 
         } catch (ArithmeticException e) {
 
-            System.out.println(
-                "El valor debe ser un número positivo para calcular la raíz cuadrada"
+            areaTexto.append(
+                "Error: El valor debe ser positivo para calcular la raíz cuadrada.\n"
+            );
+        }
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+
+        String entrada = campoTexto.getText();
+
+        areaTexto.append(entrada + "\n");
+
+        campoTexto.setText("");
+
+        try {
+
+            double valor = Double.parseDouble(entrada);
+
+            calcularLogaritmoNeperiano(valor);
+
+            calcularRaizCuadrada(valor);
+
+            areaTexto.append("\nProceso finalizado.");
+
+            campoTexto.setEditable(false);
+
+        } catch (Exception ex) {
+
+            areaTexto.append(
+                "\nError: Debe ingresar un valor numérico válido.\n"
             );
 
-        } catch (InputMismatchException e) {
-
-            System.out.println(
-                "El valor debe ser numérico para calcular la raíz cuadrada"
-            );
+            areaTexto.append("> ");
         }
     }
 
     // Método principal
     public static void main(String[] args) {
 
-        Scanner teclado = new Scanner(System.in);
-
-        try {
-
-            System.out.print("Valor numérico = ");
-
-            double valor = teclado.nextDouble();
-
-            calcularLogaritmoNeperiano(valor);
-
-            calcularRaizCuadrada(valor);
-
-        } catch (InputMismatchException e) {
-
-            System.out.println("Debe ingresar un valor numérico válido.");
-
-        } finally {
-
-            teclado.close();
-        }
+        new CalculosNumericos();
     }
 }
