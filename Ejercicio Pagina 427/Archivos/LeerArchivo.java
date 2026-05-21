@@ -1,44 +1,102 @@
 package Archivos;
 
+import javax.swing.*;
+import java.awt.*;
 import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
-public class LeerArchivo {
+public class LeerArchivo extends JFrame {
 
-    public static void main(String[] args) {
+    JTextArea areaTexto;
 
-        String nombreArchivo = "/workspaces/Actividad-4/Ejercicio Pagina 427/LeerArchivo.txt";
+    public LeerArchivo() {
+
+        setTitle("Lectura de Archivo");
+
+        setSize(600, 400);
+
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+        setLocationRelativeTo(null);
+
+        setLayout(new BorderLayout());
+
+        // Área de texto
+        areaTexto = new JTextArea();
+
+        areaTexto.setEditable(false);
+
+        areaTexto.setFont(
+            new Font("Consolas", Font.PLAIN, 15)
+        );
+
+        JScrollPane scroll =
+            new JScrollPane(areaTexto);
+
+        add(scroll, BorderLayout.CENTER);
+
+        setVisible(true);
+
+        leerArchivo();
+    }
+
+    // Método para leer archivo
+    void leerArchivo() {
+
+        String nombreArchivo =
+            "/workspaces/Actividad-4/Ejercicio Pagina 427/LeerArchivo.txt";
 
         FileInputStream archivo;
+
         InputStreamReader conversor;
+
         BufferedReader filtro;
 
         String linea;
 
         try {
 
-            archivo = new FileInputStream(nombreArchivo);
+            areaTexto.append(
+                "Leyendo archivo...\n\n"
+            );
 
-            conversor = new InputStreamReader(archivo);
+            archivo =
+                new FileInputStream(nombreArchivo);
 
-            filtro = new BufferedReader(conversor);
+            conversor =
+                new InputStreamReader(archivo);
+
+            filtro =
+                new BufferedReader(conversor);
 
             linea = filtro.readLine();
 
             while (linea != null) {
 
-                System.out.println(linea);
+                areaTexto.append(linea + "\n");
 
                 linea = filtro.readLine();
             }
 
             filtro.close();
 
+            areaTexto.append(
+                "\nLectura finalizada."
+            );
+
         } catch (IOException e) {
 
-            System.out.println("No se pudo leer el archivo.");
+            areaTexto.append(
+                "No se pudo leer el archivo."
+            );
         }
+    }
+
+    // Main
+    public static void main(String[] args) {
+
+        new LeerArchivo();
     }
 }
